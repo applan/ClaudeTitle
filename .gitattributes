@@ -1,0 +1,6 @@
+# 상태줄 래퍼는 bash 로 실행됩니다. CRLF 로 체크아웃되면 Windows 의 Git Bash 에서
+# $'\r': command not found 로 죽으므로 반드시 LF 를 강제합니다.
+*.sh text eol=lf
+*.cjs text eol=lf
+*.json text eol=lf
+*.md text eol=lf
