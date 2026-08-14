@@ -27,6 +27,16 @@ const MARKER = 'title-statusline.sh';
 const COMMAND = 'bash "$HOME/.claude/title-statusline.sh"';
 
 const log = (msg) => process.stdout.write(msg + '\n');
+
+// 래퍼 첫머리의 버전 주석을 읽습니다. 설치된 사본이 낡았는지 판별하는 데 씁니다.
+function wrapperVersion(file) {
+  try {
+    const m = fs.readFileSync(file, 'utf8').match(/claude-title-wrapper-version:\s*([0-9.]+)/);
+    return m ? m[1] : '(버전 표기 없음 — 1.0.x 이전)';
+  } catch {
+    return null;
+  }
+}
 const fail = (msg) => { process.stdout.write('ERROR: ' + msg + '\n'); process.exit(1); };
 
 function readSettings() {
@@ -78,7 +88,13 @@ function install() {
     if (fs.existsSync(DELEGATE)) fs.unlinkSync(DELEGATE);
     log('기존 상태줄이 없어 "📁 폴더명 | 🏷 타이틀" 형태로 설치합니다.');
   } else {
-    log('이미 설치되어 있어 래퍼 스크립트만 최신으로 갱신합니다.');
+    const before = wrapperVersion(WRAPPER);
+    const after = wrapperVersion(SOURCE);
+    if (before !== after) {
+      log(`이미 설치되어 있습니다. 래퍼를 ${before} → ${after} 로 갱신합니다.`);
+    } else {
+      log(`이미 설치되어 있습니다 (래퍼 ${after}). 최신 상태입니다.`);
+    }
   }
 
   fs.copyFileSync(SOURCE, WRAPPER);
@@ -128,6 +144,9 @@ function status() {
   log(`settings.json          : ${fs.existsSync(SETTINGS) ? SETTINGS : '(없음)'}`);
   log(`statusLine.command     : ${cmd === null ? '(설정 없음)' : cmd}`);
   log(`래퍼 설치됨            : ${cmd !== null && cmd.includes(MARKER) ? '예' : '아니오'}`);
+  log(`설치된 래퍼 버전       : ${wrapperVersion(WRAPPER) || '(래퍼 없음)'}`);
+  log(`이 플러그인의 래퍼 버전: ${wrapperVersion(SOURCE) || '(원본 없음)'}`);
+  log(`이 플러그인 위치       : ${__dirname}`);
   log(`${WRAPPER} : ${fs.existsSync(WRAPPER) ? '있음' : '없음'}`);
   log(`${DELEGATE} : ${fs.existsSync(DELEGATE) ? '있음' : '없음'}`);
   if (fs.existsSync(DELEGATE)) {

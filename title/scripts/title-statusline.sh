@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# claude-title-wrapper-version: 1.1.0
 # claude-title — 상태줄 타이틀 세그먼트
 #
 # 이 스크립트는 statusLine 명령으로 등록되어, 표준입력으로 들어온 세션 JSON에서

@@ -7,7 +7,7 @@ claude-title 의 현재 설치 상태를 진단합니다.
 Bash 도구로 아래 한 줄을 그대로 실행하세요:
 
 ```bash
-S="$CLAUDE_PLUGIN_ROOT/scripts/install-statusline.cjs"; [ -f "$S" ] || S=$(find "$HOME/.claude/plugins" -name install-statusline.cjs 2>/dev/null | head -1); [ -n "$S" ] && node "$S" --status || echo "ERROR: 진단 스크립트를 찾지 못했습니다."
+S="$CLAUDE_PLUGIN_ROOT/scripts/install-statusline.cjs"; [ -f "$S" ] || S=$(find "$HOME/.claude/plugins" -name install-statusline.cjs -printf "%T@ %p\n" 2>/dev/null | sort -rn | head -1 | cut -d" " -f2-); [ -n "$S" ] && node "$S" --status || echo "ERROR: 진단 스크립트를 찾지 못했습니다."
 ```
 
 출력 내용을 사용자에게 그대로 보여준 뒤, 다음 기준으로 한두 줄만 덧붙여 해석해 주세요:

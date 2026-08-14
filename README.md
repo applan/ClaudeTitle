@@ -34,6 +34,14 @@ Plugin commands are **always prefixed with the plugin name.** Plain `/set` does 
 
 Drop a `.claude-title` file in a project folder to give every session opened there a default title. A title set with `/title:set` always wins.
 
+## Updating
+
+After updating the plugin, **run `/title:setup` again.**
+
+The status line wrapper is a copy made at install time at `~/.claude/title-statusline.sh`, so updating the plugin alone leaves the old script running. `/title:setup` overwrites the copy and reports the change (`래퍼를 1.0.0 → 1.1.0 로 갱신합니다`). Restart Claude Code afterwards.
+
+Run `/title:status` to see which wrapper version is actually live.
+
 ## It does not clobber your existing status line
 
 Safe to install even if you already use `statusLine` (claude-pulse, your own script, whatever). `/title:setup` **does not overwrite** your command — it preserves it verbatim in `~/.claude/title-statusline.delegate`, then the wrapper re-runs it with the same stdin and appends its output. Your original status line keeps working; the title is simply prepended.
@@ -49,10 +57,10 @@ Safe to install even if you already use `statusLine` (claude-pulse, your own scr
 To revert:
 
 ```
-/title:setup --uninstall
+/title:remove
 ```
 
-Your pre-install status line is restored exactly.
+Your pre-install status line is restored exactly. **Restart Claude Code** for the change to show.
 
 ## Requirements
 
