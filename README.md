@@ -18,37 +18,35 @@ Show a **per-session work title in the Claude Code status line**. When you keep 
 Then run this **once** to turn on the status line output:
 
 ```
-/title-setup
+/claude-title:title-setup
 ```
 
 ## Usage
 
 ```
-/title payment refactor     set the title
-/title                      clear the title
+/claude-title:title payment refactor     set the title
+/claude-title:title                      clear the title
 ```
 
-`/title` works as long as nothing else claims that name. The fully qualified `/claude-title:title` always works.
+Plugin commands are **always prefixed with the plugin name.** Plain `/title` does not resolve (you get `Unknown command`). Type `/` to pick it from the list instead.
 
-> **If only `/claude-title:title` resolves**, a personal command such as `~/.claude/commands/title.md` already owns `/title`. Delete it — if you are migrating to this plugin, that file is what you are replacing — and `/title` will point at the plugin.
-
-Drop a `.claude-title` file in a project folder to give every session opened there a default title. A title set with `/title` always wins.
+Drop a `.claude-title` file in a project folder to give every session opened there a default title. A title set with `/claude-title:title` always wins.
 
 ## It does not clobber your existing status line
 
-Safe to install even if you already use `statusLine` (claude-pulse, your own script, whatever). `/title-setup` **does not overwrite** your command — it preserves it verbatim in `~/.claude/title-statusline.delegate`, then the wrapper re-runs it with the same stdin and appends its output. Your original status line keeps working; the title is simply prepended.
+Safe to install even if you already use `statusLine` (claude-pulse, your own script, whatever). `/claude-title:title-setup` **does not overwrite** your command — it preserves it verbatim in `~/.claude/title-statusline.delegate`, then the wrapper re-runs it with the same stdin and appends its output. Your original status line keeps working; the title is simply prepended.
 
 - If your existing status line **already shows the title**, it is left alone rather than duplicated — safe to install over a hand-rolled setup.
 - `~/.claude/settings.json` is backed up to `settings.json.bak-claude-title` before any write.
 - Other settings keys and `statusLine.padding` are preserved.
 - If `statusLine.type` is not `command`, it refuses to merge and **changes nothing**.
 - If `settings.json` is malformed, it aborts without touching anything.
-- Running `/title-setup` repeatedly will not install twice.
+- Running `/claude-title:title-setup` repeatedly will not install twice.
 
 To revert:
 
 ```
-/title-setup --uninstall
+/claude-title:title-setup --uninstall
 ```
 
 Your pre-install status line is restored exactly.
@@ -62,17 +60,17 @@ Your pre-install status line is restored exactly.
 
 | File | Role |
 |---|---|
-| `~/.claude/session-titles/<session-id>.txt` | per-session title written by `/title` |
+| `~/.claude/session-titles/<session-id>.txt` | per-session title written by `/claude-title:title` |
 | `~/.claude/title-statusline.sh` | status line wrapper; prepends title, delegates to your command |
 | `~/.claude/title-statusline.delegate` | your original statusLine command |
 
 ## Troubleshooting
 
 **I set a title but nothing shows up.**
-Make sure you ran `/title-setup`. If it still does not show, restart Claude Code.
+Make sure you ran `/claude-title:title-setup`. If it still does not show, restart Claude Code.
 
 **I (re)installed claude-pulse and my title vanished.**
-Pulse's installer overwrites `statusLine` wholesale. Run `/title-setup` once more — the title comes back and pulse keeps working. Note that using `/pulse` to change themes, visible parts, or animation does not touch `statusLine`, so it is unaffected.
+Pulse's installer overwrites `statusLine` wholesale. Run `/claude-title:title-setup` once more — the title comes back and pulse keeps working. Note that using `/pulse` to change themes, visible parts, or animation does not touch `statusLine`, so it is unaffected.
 
 **My status line disappeared.**
 Restore `~/.claude/settings.json.bak-claude-title` over `settings.json` to get back to the pre-install state.
