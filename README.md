@@ -67,6 +67,9 @@ Your pre-install status line is restored exactly.
 **I set a title but nothing shows up.**
 Make sure you ran `/title-setup`. If it still does not show, restart Claude Code.
 
+**I (re)installed claude-pulse and my title vanished.**
+Pulse's installer overwrites `statusLine` wholesale. Run `/title-setup` once more — the title comes back and pulse keeps working. Note that using `/pulse` to change themes, visible parts, or animation does not touch `statusLine`, so it is unaffected.
+
 **My status line disappeared.**
 Restore `~/.claude/settings.json.bak-claude-title` over `settings.json` to get back to the pre-install state.
 

@@ -65,6 +65,9 @@ Claude Code 세션마다 **상태줄에 작업 타이틀**을 표시합니다. �
 **타이틀을 설정했는데 상태줄에 안 보입니다.**
 `/title-setup` 을 실행한 적이 있는지 확인하세요. 그래도 안 보이면 Claude Code 를 재시작하세요.
 
+**claude-pulse 를 (재)설치했더니 타이틀이 사라졌습니다.**
+pulse 의 설치 루틴이 `statusLine` 을 통째로 덮어쓰기 때문입니다. `/title-setup` 을 한 번 더 실행하면 복구되고, pulse 상태줄도 그대로 유지됩니다. 참고로 `/pulse` 로 테마·표시항목·애니메이션을 바꾸는 것은 `statusLine` 을 건드리지 않으므로 영향이 없습니다.
+
 **상태줄이 아예 사라졌습니다.**
 `~/.claude/settings.json.bak-claude-title` 을 `settings.json` 으로 되돌리면 설치 이전 상태가 됩니다.
 
