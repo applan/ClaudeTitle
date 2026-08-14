@@ -1,9 +1,0 @@
-{
-  "name": "claude-title",
-  "version": "1.0.0",
-  "description": "세션마다 상태줄에 작업 타이틀을 표시합니다. /title 로 설정하고, 여러 터미널을 띄워도 어느 창이 무슨 작업인지 한눈에 구분됩니다.",
-  "author": {
-    "name": "applan"
-  },
-  "keywords": ["statusline", "title", "session", "productivity"]
-}

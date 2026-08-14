@@ -7,7 +7,7 @@
  * 래퍼가 실행될 때 그 명령을 같은 입력으로 다시 실행해 뒤에 이어붙이므로,
  * 기존 상태줄(claude-pulse 등)은 그대로 동작합니다.
  *
- *   node install-statusline.cjs              설치 / 재설치
+ *   node install-statusline.cjs              설치 / 재설치  (/title:setup)
  *   node install-statusline.cjs --uninstall  제거 후 원래 상태줄 복구
  */
 
@@ -89,7 +89,7 @@ function install() {
   writeSettings(settings);
 
   log('');
-  log('설치 완료. /title 결제모듈 처럼 입력하면 상태줄에 표시됩니다.');
+  log('설치 완료. /title:set 결제모듈 처럼 입력하면 상태줄에 표시됩니다.');
   log('(현재 세션에는 바로 반영되지 않을 수 있습니다. 안 보이면 Claude Code 를 재시작하세요.)');
 }
 

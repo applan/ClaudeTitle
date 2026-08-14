@@ -7,7 +7,7 @@ claude-title 상태줄을 설치합니다. 기존 statusLine 설정이 있으면
 Bash 도구로 아래 한 줄을 그대로 실행하세요:
 
 ```bash
-S="$CLAUDE_PLUGIN_ROOT/scripts/install-statusline.cjs"; [ -f "$S" ] || S=$(find "$HOME/.claude/plugins" -path "*claude-title*/scripts/install-statusline.cjs" 2>/dev/null | head -1); [ -n "$S" ] && node "$S" || echo "ERROR: 설치 스크립트를 찾지 못했습니다."
+S="$CLAUDE_PLUGIN_ROOT/scripts/install-statusline.cjs"; [ -f "$S" ] || S=$(find "$HOME/.claude/plugins" -name install-statusline.cjs 2>/dev/null | head -1); [ -n "$S" ] && node "$S" || echo "ERROR: 설치 스크립트를 찾지 못했습니다."
 ```
 
 그리고 스크립트가 출력한 내용을 사용자에게 그대로 요약해 전달하세요. 특히 다음은 빠뜨리지 마세요:
