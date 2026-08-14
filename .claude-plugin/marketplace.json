@@ -1,0 +1,13 @@
+{
+  "name": "claude-title",
+  "owner": {
+    "name": "applan"
+  },
+  "plugins": [
+    {
+      "name": "claude-title",
+      "source": "./claude-title",
+      "description": "세션마다 상태줄에 작업 타이틀 표시 (기존 상태줄 보존)"
+    }
+  ]
+}
