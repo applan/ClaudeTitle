@@ -28,6 +28,10 @@ Then run this **once** to turn on the status line output:
 /title                      clear the title
 ```
 
+`/title` works as long as nothing else claims that name. The fully qualified `/claude-title:title` always works.
+
+> **If only `/claude-title:title` resolves**, a personal command such as `~/.claude/commands/title.md` already owns `/title`. Delete it — if you are migrating to this plugin, that file is what you are replacing — and `/title` will point at the plugin.
+
 Drop a `.claude-title` file in a project folder to give every session opened there a default title. A title set with `/title` always wins.
 
 ## It does not clobber your existing status line

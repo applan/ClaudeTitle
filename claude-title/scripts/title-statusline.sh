@@ -45,7 +45,8 @@ fi
 
 # 기존 상태줄이 이미 타이틀을 보여주고 있으면(직접 만들어 쓰던 경우 등) 중복해서 붙이지 않습니다.
 if [ -n "$title" ] && ! printf '%s' "$base" | grep -qF -- "$title"; then
-  printf '%s' "🏷 $title | $base"
+  # 아이콘과 제목 사이는 공백 두 칸입니다. 🏷 가 넓게 렌더링돼 한 칸이면 붙어 보입니다.
+  printf '%s' "🏷  $title | $base"
 else
   printf '%s' "$base"
 fi
