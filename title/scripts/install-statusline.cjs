@@ -119,5 +119,41 @@ function uninstall() {
   log('제거 완료. Claude Code 를 재시작하세요.');
 }
 
-if (process.argv.includes('--uninstall')) uninstall();
+function status() {
+  const settings = readSettings();
+  const sl = settings.statusLine;
+  const cmd = sl && typeof sl.command === 'string' ? sl.command : null;
+
+  log('--- claude-title 상태 진단 ---');
+  log(`settings.json          : ${fs.existsSync(SETTINGS) ? SETTINGS : '(없음)'}`);
+  log(`statusLine.command     : ${cmd === null ? '(설정 없음)' : cmd}`);
+  log(`래퍼 설치됨            : ${cmd !== null && cmd.includes(MARKER) ? '예' : '아니오'}`);
+  log(`${WRAPPER} : ${fs.existsSync(WRAPPER) ? '있음' : '없음'}`);
+  log(`${DELEGATE} : ${fs.existsSync(DELEGATE) ? '있음' : '없음'}`);
+  if (fs.existsSync(DELEGATE)) {
+    log(`  보존된 원래 명령     : ${fs.readFileSync(DELEGATE, 'utf8').trim()}`);
+  }
+
+  // 래퍼를 제거해도 타이틀이 계속 보이는 가장 흔한 원인:
+  // 현재 statusLine 자체가 session-titles 를 직접 읽는 손수 만든 스크립트인 경우.
+  if (cmd !== null && !cmd.includes(MARKER) && cmd.includes('session-titles')) {
+    log('');
+    log('※ 현재 statusLine 이 session-titles 를 직접 읽고 있습니다.');
+    log('  이 플러그인이 아니라 예전에 손으로 넣은 설정이 타이틀을 그리는 중입니다.');
+    log('  이 명령에서 타이틀 부분을 직접 지우거나, 백업본으로 되돌리세요.');
+  }
+
+  const titlesDir = path.join(CLAUDE_DIR, 'session-titles');
+  const titles = fs.existsSync(titlesDir) ? fs.readdirSync(titlesDir) : [];
+  log(`저장된 타이틀 파일     : ${titles.length}개`);
+  log(`백업본                 : ${fs.existsSync(BACKUP) ? BACKUP : '(없음)'}`);
+
+  const personal = path.join(CLAUDE_DIR, 'commands', 'title.md');
+  if (fs.existsSync(personal)) {
+    log(`개인 명령어            : ${personal} (플러그인과 별개로 존재)`);
+  }
+}
+
+if (process.argv.includes('--status')) status();
+else if (process.argv.includes('--uninstall')) uninstall();
 else install();

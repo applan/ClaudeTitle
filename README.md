@@ -28,6 +28,8 @@ Then run this **once** to turn on the status line output:
 /title:set                      clear the title
 ```
 
+Use `/title:status` to diagnose a confused install or uninstall (read-only).
+
 Plugin commands are **always prefixed with the plugin name.** Plain `/set` does not resolve (you get `Unknown command`). Type `/` to pick it from the list instead.
 
 Drop a `.claude-title` file in a project folder to give every session opened there a default title. A title set with `/title:set` always wins.
@@ -66,6 +68,9 @@ Your pre-install status line is restored exactly.
 | `~/.claude/title-statusline.delegate` | your original statusLine command |
 
 ## Troubleshooting
+
+**I uninstalled but the title is still there.**
+Run `/title:status`. If it reports the wrapper is not installed yet you still see a title, this plugin is not the cause — your `statusLine` command itself reads `session-titles` (a hand-rolled setup from before). Edit the title part out of `statusLine` in `~/.claude/settings.json`, or restore the backup. Status line changes need a Claude Code restart to apply reliably.
 
 **I set a title but nothing shows up.**
 Make sure you ran `/title:setup`. If it still does not show, restart Claude Code.
