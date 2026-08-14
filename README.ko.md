@@ -60,6 +60,8 @@ Claude Code 세션마다 **상태줄에 작업 타이틀**을 표시합니다. �
 
 설치 전에 쓰던 상태줄이 그대로 복구됩니다. 화면에 반영되려면 **Claude Code 를 재시작**해야 합니다.
 
+이 플러그인은 예전에 `claude-title` 이라는 이름이었습니다. 이름이 바뀌면 업데이트로 승계되지 않아 옛 항목이 남고 `/claude-title:...` 커맨드가 목록에 계속 보이는데, `/title:remove` 가 그 등록(`enabledPlugins`, `installed_plugins.json`, 캐시 폴더)까지 함께 걷어냅니다. 건드리기 전에 `installed_plugins.json.bak-claude-title` 로 백업하며, 다른 플러그인은 손대지 않습니다.
+
 ## 요구 사항
 
 - **Windows**: Git Bash 필요. Claude Code 가 상태줄 명령을 bash 로 실행합니다.

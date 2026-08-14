@@ -62,6 +62,8 @@ To revert:
 
 Your pre-install status line is restored exactly. **Restart Claude Code** for the change to show.
 
+This plugin used to be named `claude-title`. A rename is not carried over by an update, so the old entry lingers and `/claude-title:...` commands keep showing up. `/title:remove` also clears that registration (`enabledPlugins`, `installed_plugins.json`, and the cache folder). It backs up `installed_plugins.json` to `installed_plugins.json.bak-claude-title` first and touches no other plugin.
+
 ## Requirements
 
 - **Windows**: Git Bash. Claude Code runs the status line command through bash.

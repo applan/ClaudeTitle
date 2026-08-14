@@ -26,6 +26,14 @@ const SOURCE = path.join(__dirname, 'title-statusline.sh');
 const MARKER = 'title-statusline.sh';
 const COMMAND = 'bash "$HOME/.claude/title-statusline.sh"';
 
+// 이 플러그인은 claude-title 에서 title 로 이름이 바뀌었습니다. 이름이 바뀌면
+// 업데이트로 승계되지 않아 옛 항목이 남고, /claude-title:title-setup 같은
+// 커맨드가 목록에 계속 보입니다. 제거할 때 아래 항목만 정확히 걷어냅니다.
+const PLUGINS_DIR = path.join(CLAUDE_DIR, 'plugins');
+const INSTALLED_PLUGINS = path.join(PLUGINS_DIR, 'installed_plugins.json');
+const LEGACY_KEY = 'claude-title@claude-title';
+const LEGACY_CACHE = path.join(PLUGINS_DIR, 'cache', 'claude-title', 'claude-title');
+
 const log = (msg) => process.stdout.write(msg + '\n');
 
 // 래퍼 첫머리의 버전 주석을 읽습니다. 설치된 사본이 낡았는지 판별하는 데 씁니다.
@@ -113,7 +121,10 @@ function uninstall() {
   const settings = readSettings();
   const existing = settings.statusLine;
   if (!existing || typeof existing.command !== 'string' || !existing.command.includes(MARKER)) {
-    log('claude-title 상태줄이 설치되어 있지 않습니다. 아무것도 변경하지 않았습니다.');
+    log('claude-title 상태줄은 설치되어 있지 않아 상태줄은 건드리지 않았습니다.');
+    // 상태줄이 이미 깨끗해도 옛 플러그인 항목은 남아 있을 수 있으므로 여기서도 정리합니다.
+    if (cleanupLegacy(settings)) writeSettings(settings);
+    log('제거 완료. Claude Code 를 재시작하세요.');
     return;
   }
   backup();
@@ -127,12 +138,54 @@ function uninstall() {
     delete settings.statusLine;
     log('상태줄 설정을 제거했습니다.');
   }
+  cleanupLegacy(settings);
   writeSettings(settings);
 
   for (const f of [WRAPPER, DELEGATE]) {
     if (fs.existsSync(f)) fs.unlinkSync(f);
   }
   log('제거 완료. Claude Code 를 재시작하세요.');
+}
+
+// 옛 claude-title 플러그인 흔적을 걷어냅니다. settings 는 호출자가 이어서 저장합니다.
+// Claude Code 가 관리하는 파일이라 반드시 백업을 남기고, 해당 키 하나만 건드립니다.
+function cleanupLegacy(settings) {
+  const done = [];
+
+  if (settings.enabledPlugins && LEGACY_KEY in settings.enabledPlugins) {
+    delete settings.enabledPlugins[LEGACY_KEY];
+    done.push('settings.json 의 enabledPlugins');
+  }
+
+  if (fs.existsSync(INSTALLED_PLUGINS)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(INSTALLED_PLUGINS, 'utf8'));
+      if (data.plugins && LEGACY_KEY in data.plugins) {
+        fs.copyFileSync(INSTALLED_PLUGINS, INSTALLED_PLUGINS + '.bak-claude-title');
+        delete data.plugins[LEGACY_KEY];
+        fs.writeFileSync(INSTALLED_PLUGINS, JSON.stringify(data, null, 2) + '\n', 'utf8');
+        done.push('installed_plugins.json 의 설치 기록');
+      }
+    } catch (e) {
+      log(`  주의: installed_plugins.json 을 정리하지 못했습니다 (${e.message}).`);
+      log('  /plugin 메뉴에서 옛 claude-title 항목을 직접 제거하세요.');
+    }
+  }
+
+  if (fs.existsSync(LEGACY_CACHE)) {
+    try {
+      fs.rmSync(LEGACY_CACHE, { recursive: true, force: true });
+      done.push('옛 플러그인 캐시 폴더');
+    } catch (e) {
+      log(`  주의: 캐시 폴더를 지우지 못했습니다 (${e.message}).`);
+    }
+  }
+
+  if (done.length) {
+    log(`옛 ${LEGACY_KEY} 흔적을 정리했습니다: ${done.join(', ')}.`);
+    log('  (/claude-title:... 커맨드는 Claude Code 재시작 후 목록에서 사라집니다)');
+  }
+  return done.length > 0;
 }
 
 function status() {
@@ -166,6 +219,14 @@ function status() {
   const titles = fs.existsSync(titlesDir) ? fs.readdirSync(titlesDir) : [];
   log(`저장된 타이틀 파일     : ${titles.length}개`);
   log(`백업본                 : ${fs.existsSync(BACKUP) ? BACKUP : '(없음)'}`);
+
+  let legacy = fs.existsSync(LEGACY_CACHE);
+  try {
+    const data = JSON.parse(fs.readFileSync(INSTALLED_PLUGINS, 'utf8'));
+    if (data.plugins && LEGACY_KEY in data.plugins) legacy = true;
+  } catch { /* 파일이 없거나 형식이 달라도 무시 */ }
+  if ((settings.enabledPlugins || {})[LEGACY_KEY] !== undefined) legacy = true;
+  log(`옛 ${LEGACY_KEY}    : ${legacy ? '남아 있음 (/title:remove 로 정리 가능)' : '없음'}`);
 
   const personal = path.join(CLAUDE_DIR, 'commands', 'title.md');
   if (fs.existsSync(personal)) {
